@@ -26,7 +26,7 @@ void loop() {
 void show(const long color[][num_rgb]){
     FastLED.clear();
  for (int i = 0; i < 256; i++) {
-    //grün rot blau
+    //green red blue
     leds[i] = CRGB(color[i][1], color[i][0], color[i][2]);
   }
     FastLED.show();
