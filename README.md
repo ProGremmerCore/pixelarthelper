@@ -7,4 +7,4 @@ You found an example Arduino code in my repo.
 
 I user the FestLED library : https://github.com/FastLED/FastLED
 
-My project is created with a ESP 1866 D1 mini and i use this as case: https://www.thingiverse.com/thing:5737371
+My project is created with a ESP32 Dev and i use this as case: https://www.thingiverse.com/thing:5737371
