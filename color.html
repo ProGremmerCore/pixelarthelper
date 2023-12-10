@@ -1,0 +1,284 @@
+<html ng-app="myApp">
+
+<head>
+    <title>Color.html</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.8.3/angular.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+</head>
+<style>
+    :root {
+        --bs-border-radius: 0rem !important;
+        --bs-progress-bg: white !important;
+        --bs--border-radius: 0rem !important;
+        --bs-pagination-padding-x: 0.75rem;
+    }
+
+    .shadow {
+        box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.2), 0 2px 5px 0 rgba(0, 0, 0, 0.19);
+    }
+
+    .card {
+        background-color: #ddd;
+    }
+
+    .form-control-color {
+        width: 2.5rem;
+        padding: unset;
+    }
+
+    .gridLayout {
+        display: grid;
+        grid-template-columns: repeat(16, 1fr);
+        grid-template-rows: repeat(16, 1fr);
+        grid-column-gap: 0px;
+        grid-row-gap: 0px;
+        justify-content: end;
+    }
+
+    .gridLayoutColorPlatte {
+        display: grid;
+        width: 250px;
+        grid-template-columns: repeat(10, 1fr);
+        grid-template-rows: repeat(10, 1fr);
+        grid-column-gap: 0px;
+        grid-row-gap: 0px;
+        justify-content: start;
+    }
+
+    .selected-color {
+        padding: 10px;
+        width: 20px;
+    }
+
+    .txt {
+        float: right;
+    }
+</style>
+
+<body ng-controller="myCtrl">
+    <div class="container mt-4 mb-4">
+        <div class="card">
+            <div class="card-header">
+                <span style="font-size: 25px;">PixelArt Generator - v1.0.0</span>
+                <span class="txt">
+                    <a type="button" class="btn btn-primary shadow" ng-click="horizentalSwirch()">
+                        <span style="display: flex;">
+                            <span class="material-symbols-outlined">swap_horiz</span>
+                            Horizontal Switch
+                        </span>
+                    </a>
+                    <a type="button" class="btn btn-primary shadow" ng-click="verticalSwitch()">
+                        <span style="display: flex;">
+                            <span class="material-symbols-outlined">
+                                swap_vert
+                            </span>
+                            Vertical Switch
+                        </span>
+                    </a>
+                    <a type="button" class="btn btn-primary shadow" data-bs-toggle="modal" data-bs-target="#addModal">
+                        <span style="display: flex;">
+                            <span class="material-symbols-outlined">
+                                add
+                            </span>
+                            Add
+                        </span>
+                    </a>
+                    <a type="button" class="btn-primary btn shadow" data-bs-toggle="modal" data-bs-target="#resetModal">
+                        <span style="display: flex;">
+                            <span class="material-symbols-outlined">
+                                delete_forever
+                            </span>
+                            Reset
+                        </span>
+                    </a>
+                </span>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-6">
+                        <h5>Color Palette</h5>
+                        <div class="palette">
+                            <div class="gridLayoutColorPlatte">
+                                <a type="button" ng-repeat="x in colors track by $index" ng-click="selectColor(x)" ng-style="{'background-color': x}" style="padding:10px"></a>
+                            </div>
+                        </div>
+
+                        <h6 class="mt-4">Last 10 Colors</h6>
+                        <div class="gridLayoutColorPlatte">
+                            <a type="button" ng-click="selectColor(x)" ng-repeat="x in lastTenColors track by $index" class="selected-color" ng-style="{'background-color': x}" style="padding:10px"></a>
+                        </div>
+
+                        <h6>Chosen Color</h6>
+                        <div class="selected-color" ng-style="{'background-color': selectedColor}"></div>
+                    </div>
+                    <div class="col-6">
+                        <div class="gridLayout">
+                            <a type="button" ng-click="changeColor($index)" ng-repeat="x in data track by $index" ng-model="data[$index]" type="color" ng-style="{'background-color': x}" class="form-control form-control-color"></a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12 mt-4">
+                    <textarea id="out" ng-model="output" rows="16" cols="16" name="out" class="shadow form-control"></textarea>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Modal -->
+    <div class="modal fade modal-lg" id="addModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">Add Colorcode</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <textarea ng-model="input" rows="16" cols="16" name="in" class="shadow form-control"></textarea>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" ng-click="regenerate()" data-bs-dismiss="modal" class="btn btn-primary">Add</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" tabindex="-1" id="resetModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">PxelArt Reset</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Are you save?</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal" ng-click="reset();">Reset All</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+<script>
+    var app = angular.module('myApp', []);
+    app.controller('myCtrl', function ($scope) {
+        $scope.lastTenColors = ['#000000'];
+        $scope.colors = [
+            "#ffffff", "#000000", "#C0C0C0", "#808080", "#FF0000", "#800000", "#FFFF00",
+            "#808000", "#00FF00", "#008000", "#00FFFF", "#008080", "#0000FF", "#000080",
+            "#FF00FF", "#800080", "#F0F8FF", "#FAEBD7", "#00FFFF", "#7FFFD4", "#F0FFFF",
+            "#F5F5DC", "#FFE4C4", "#000000", "#FFEBCD", "#0000FF", "#8A2BE2", "#A52A2A",
+            "#DEB887", "#5F9EA0", "#7FFF00", "#D2691E", "#FF7F50", "#6495ED", "#FFF8DC",
+            "#DC143C", "#00FFFF", "#00008B", "#008B8B", "#B8860B", "#A9A9A9", "#006400",
+            "#BDB76B", "#8B008B", "#556B2F", "#FF8C00", "#9932CC", "#8B0000", "#E9967A",
+            "#8FBC8F", "#483D8B", "#2F4F4F", "#00CED1", "#9400D3", "#FF1493", "#00BFFF",
+            "#696969", "#1E90FF", "#B22222", "#FFFAF0", "#228B22", "#FF00FF", "#DCDCDC",
+            "#F8F8FF", "#FFD700", "#DAA520", "#808080", "#008000", "#ADFF2F", "#F0FFF0",
+            "#FF69B4", "#CD5C5C", "#4B0082", "#FFFFF0", "#F0E68C", "#E6E6FA", "#FFF0F5",
+            "#7CFC00", "#FFFACD", "#ADD8E6", "#F08080", "#E0FFFF", "#FAFAD2", "#90EE90",
+            "#D3D3D3", "#FFB6C1", "#FFA07A", "#20B2AA", "#87CEFA", "#778899", "#B0C4DE",
+            "#FFFFE0", "#00FF00", "#32CD32", "#FAF0E6", "#FF00FF", "#800000", "#66CDAA",
+            "#0000CD", "#BA55D3", "#9370DB", "#3CB371", "#7B68EE", "#00FA9A", "#48D1CC",
+            "#C71585", "#191970", "#F5FFFA", "#FFE4E1", "#FFE4B5", "#FFDEAD", "#000080",
+            "#FDF5E6", "#808000", "#6B8E23", "#FFA500", "#FF4500", "#DA70D6", "#EEE8AA",
+            "#98FB98", "#AFEEEE", "#DB7093", "#FFEFD5", "#FFDAB9", "#CD853F", "#FFC0CB",
+            "#DDA0DD", "#B0E0E6", "#800080", "#FF0000", "#BC8F8F", "#4169E1", "#8B4513",
+            "#FA8072", "#FAA460", "#2E8B57", "#FFF5EE", "#A0522D", "#C0C0C0", "#87CEEB",
+            "#6A5ACD", "#708090", "#FFFAFA", "#00FF7F", "#4682B4", "#D2B48C", "#008080",
+            "#D8BFD8", "#FF6347", "#40E0D0", "#EE82EE", "#F5DEB3", "#FFFFFF", "#F5F5F5",
+            "#FFFF00", "#9ACD32"
+        ];
+        $scope.reset = function () {
+            $scope.data = [];
+            $scope.output = "";
+            for (var i = 0; i < 256; i++) {
+                $scope.data[i] = '#000000';
+            }
+            $scope.generieren();
+        }
+        $scope.generieren = function () {
+            $scope.output = "{";
+            var cache = angular.copy($scope.data);
+            for (var a = 0; a < 16; a++) {
+                if (a % 2 === 0) {
+                    cache = teilArrayUmkehren(cache, a * 16, (a * 16) + 16);
+                }
+            }
+            for (var a = 0; a < 256; a++) {
+                var rgb = hexToRgb(cache[a]);
+                $scope.output += "{" + rgb[0] + "," + rgb[1] + "," + rgb[2] + "}";
+                if (a < 255) {
+                    $scope.output += ",";
+                }
+            }
+            $scope.output += "}";
+        }
+        $scope.selectedColor = '#000000';
+        $scope.selectColor = function (color) {
+            $scope.selectedColor = color;
+            var findColor = $scope.lastTenColors.find(x => x == color) ? undefined : null;
+            if (findColor < 10 && findColor == null) {
+                $scope.lastTenColors.push(color);
+            }
+            if ($scope.lastTenColors.length > 10) {
+                $scope.lastTenColors.shift();
+            }
+
+        };
+        $scope.regenerate = function () {
+            var cache = $scope.input;
+            cache = cache.replaceAll("{", "");
+            cache = cache.replaceAll("}", "");
+            const parts = cache.split(',');
+            const rgbToHex = (r, g, b) => "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
+            var result = [];
+            for (let i = 0; i < parts.length; i += 3) {
+                const r = parseInt(parts[i]);
+                const g = parseInt(parts[i + 1]);
+                const b = parseInt(parts[i + 2]);
+                const hexValue = rgbToHex(r, g, b);
+                result.push(hexValue);
+            }
+            for (var a = 0; a < 16; a++) {
+                if (a % 2 === 0) {
+                    result = teilArrayUmkehren(result, a * 16, (a * 16) + 16);
+                }
+            }
+            for (var a = 0; a < 256; a++) {
+                $scope.data[a] = result[a];
+            }
+            $scope.generieren();
+            $scope.input = "";
+        }
+        $scope.horizentalSwirch = function () {
+            for (var a = 0; a < 16; a++) {
+                $scope.data = teilArrayUmkehren($scope.data, a * 16, (a * 16) + 16);
+            }
+            $scope.generieren();
+        }
+        $scope.verticalSwitch = function () {
+            $scope.data = $scope.data.reverse();
+            $scope.generieren();
+        }
+        $scope.changeColor = function (i) {
+            $scope.data[i] = $scope.selectedColor;
+            $scope.generieren();
+        }
+        function hexToRgb(hex, result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex)) {
+            return result ? result.map(i => parseInt(i, 16)).slice(1) : null
+        }
+        function teilArrayUmkehren(arr, start, end) {
+            const teil = arr.slice(start, end);
+            const umgedrehterTeil = teil.reverse();
+            arr.splice(start, umgedrehterTeil.length, ...umgedrehterTeil);
+            return arr;
+        }
+
+        $scope.reset();
+    });
+</script>
+
+</html>
