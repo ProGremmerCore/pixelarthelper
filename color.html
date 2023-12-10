@@ -62,7 +62,7 @@
     <div class="container mt-4 mb-4">
         <div class="card">
             <div class="card-header">
-                <span style="font-size: 25px;">PixelArt Generator - v1.0.0</span>
+                <span style="font-size: 25px;">PixelArt Generator - v1.1.0</span>
                 <span class="txt">
                     <a type="button" class="btn btn-primary shadow" ng-click="horizentalSwirch()">
                         <span style="display: flex;">
@@ -111,8 +111,8 @@
                             <a type="button" ng-click="selectColor(x)" ng-repeat="x in lastTenColors track by $index" class="selected-color" ng-style="{'background-color': x}" style="padding:10px"></a>
                         </div>
 
-                        <h6>Chosen Color</h6>
-                        <div class="selected-color" ng-style="{'background-color': selectedColor}"></div>
+                        <h6>Current Color (Color Picker)</h6>
+                        <input type="color" class="form-control-color" ng-model="selectedColor">
                     </div>
                     <div class="col-6">
                         <div class="gridLayout">
